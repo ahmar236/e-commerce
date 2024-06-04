@@ -1,37 +1,18 @@
-'use client'
-import React, { useEffect, useState } from "react";
+// 'use client'
+// import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import DeleteButton from "../../../components/CatDel";
 
-const CategoryTable = () => {
-    const [categories, setCategories] = useState([]);
+const CategoryTable = async () => {
+    async function getData() {
+        const res = await fetch("http://localhost:3000/api/categories")
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch('http://localhost:3000/api/categories');
-                const data = await res.json();
-                setCategories(data.message);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
+        return res.json()
+    }
 
-        fetchData();
-    }, []);
+    const data = await getData()
 
-    const handleDelete = async (categoryId) => {
-        try {
-            // Send DELETE request to your API endpoint
-            await fetch(`http://localhost:3000/api/categories/${categoryId}`, {
-                method: 'DELETE'
-            });
-
-            // Update categories state after successful deletion
-            setCategories(categories.filter(category => category._id !== categoryId));
-        } catch (error) {
-            console.error('Error deleting category:', error);
-        }
-    };
+    // console.log(data?.message)
 
     return (
         <div>
@@ -45,14 +26,12 @@ const CategoryTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {categories.map(category => (
-                            <tr className="bg-white border-b" key={category._id}>
-                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{category.title}</td>
-                                <td className="px-6 py-4">{category.desc}</td>
+                        {data?.message.map((v, i) => (
+                            <tr className="bg-white border-b" key={i}>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{v.title}</td>
+                                <td className="px-6 py-4">{v.desc}</td>
                                 <td className="px-6 py-4 text-center">
-                                    <button onClick={() => handleDelete(category._id)}>
-                                        <i className="bx bx-comment-x"></i>
-                                    </button>
+                                    <DeleteButton id={v._id} />
                                 </td>
                             </tr>
                         ))}

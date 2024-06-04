@@ -1,37 +1,20 @@
-'use client'
-import React, { useEffect, useState } from "react";
+// 'use client'
+import React from "react";
 import Link from "next/link";
+import DeleteButton from "../../../components/ProdDel"
+// import { Toaster, toast } from 'react-hot-toast';
+// import { useRouter } from 'next/navigation';
 
-const ProductTable = () => {
-    const [products, setProducts] = useState([]);
+async function getData() {
+    const res = await fetch("http://localhost:3000/api/products", { cache: 'no-store' });
+    return res.json();
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch('http://localhost:3000/api/products');
-                const data = await res.json();
-                setProducts(data.message);
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            }
-        };
+const ProductTable = async () => {
+    const data = await getData();
 
-        fetchData();
-    }, []);
+    console.log(data?.message)
 
-    const handleDelete = async (productId) => {
-        try {
-            // Send DELETE request to your API endpoint
-            await fetch(`http://localhost:3000/api/products/${productId}`, {
-                method: 'DELETE'
-            });
-
-            // Update products state after successful deletion
-            setProducts(products.filter(product => product._id !== productId));
-        } catch (error) {
-            console.error('Error deleting product:', error);
-        }
-    };
 
     return (
         <div>
@@ -47,19 +30,19 @@ const ProductTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map(product => (
-                            <tr className="bg-white border-b" key={product._id}>
-                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{product.title}</td>
-                                <td className="px-6 py-4">{product.stock}</td>
-                                <td className="px-6 py-4">{product.category.title}</td>
-                                <td className="px-6 py-4">{product.price}</td>
-                                <td className="px-6 py-4 text-center">
-                                    <button onClick={() => handleDelete(product._id)}>
-                                        <i className="bx bx-comment-x"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {data?.message.map((v, i) => {
+                            return (
+                                <tr className="bg-white border-b" key={i}>
+                                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{v?.title}</td>
+                                    <td className="px-6 py-4">{v?.stock}</td>
+                                    <td className="px-6 py-4">{v?.category.title}</td>
+                                    <td className="px-6 py-4">{v?.price}</td>
+                                    <td className="px-6 py-4 text-center">
+                                        <DeleteButton id={v._id} />
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -70,4 +53,4 @@ const ProductTable = () => {
     );
 };
 
-export default ProductTable;
+export default ProductTable

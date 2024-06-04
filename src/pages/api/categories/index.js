@@ -28,27 +28,6 @@ export default async function handler(req,res){
             break
 
 
-            case "DELETE":
-                try {
-    
-                    var products = await CategoryModel.findByIdAndDelete(req.body)
-    
-                    res.send({
-                        sucess:true,
-                        message:products
-                    })
-    
-                    
-                } catch (error) {
-                    res.status(500).json({
-                        success:false,
-                        message:error.message
-                    })
-                }
-                break
-            
-            
-
         case "POST":
             try {
 

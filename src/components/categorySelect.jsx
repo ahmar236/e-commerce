@@ -17,11 +17,14 @@ const CategorySelect = async () => {
 
     return (
         <div>
-            <select id="category" class="bg-gray-50 pl-4 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+            <select
+                id="category"
+
+                class="bg-gray-50 pl-4 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <option selected="" className='ml-2'>Select category</option>
                 {data?.message.map((v, i) => {
                     return (
-                        <div key={i} >
+                        <div key={i} value={v._id}>
                             <option value={v?.title}>{v?.title}</option >
                         </div>
                     )
