@@ -5,15 +5,16 @@ import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import Loader from "../components/loader";
 import { useRouter } from "next/navigation";
-import CategorySelect from "../components/categorySelect"
+// import CategorySelect from "../components/categorySelect"
 import Link from "next/link";
 
 const ProductAddForm = () => {
-    const [options, setOption] = useState([]);
+    const [options, setOptions] = useState([]);
     const [formData, setFormData] = useState({
         title: "",
         stock: "",
         price: "",
+        brand: "",
         category: "",
         // images: "",
         desc: "",
@@ -24,7 +25,7 @@ const ProductAddForm = () => {
             const res = await fetch("http://localhost:3000/api/categories");
             const resjson = await res.json();
             console.log(resjson);
-            setOption(resjson.message);
+            setOptions(resjson.message);
         } catch (error) {
             console.log(error);
         }
@@ -32,11 +33,13 @@ const ProductAddForm = () => {
     useEffect(() => {
         getData();
     }, []);
+
     // ChangeHandler =======================================================================/
     function changeHandler(e) {
         const { name, value } = e.target;
         // console.log(value);
         setFormData({ ...formData, [name]: value });
+        // setOption({ ...Option, [name]: value });
     }
     console.log(formData);
 
@@ -64,6 +67,8 @@ const ProductAddForm = () => {
         } finally {
             setLoading(false);
         }
+
+        console.log(formData)
     }
     return (
         <div>
@@ -77,18 +82,20 @@ const ProductAddForm = () => {
                                 <label htmlFor='name' class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Name *</label>
                                 <input
                                     type="text"
-                                    name="title"
+                                    name={"title"}
+                                    value={formData.title}
                                     id="name"
                                     onChange={(e) => changeHandler(e)}
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="Type product name"
-                                    required="" />
+                                    required />
                             </div>
                             <div class="w-full">
                                 <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand</label>
                                 <input
                                     type="text"
-                                    name="brand"
+                                    name={"brand"}
+                                    value={formData.brand}
                                     id="brand"
                                     onChange={changeHandler}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -100,6 +107,7 @@ const ProductAddForm = () => {
                                 <input
                                     type="number"
                                     name={"price"}
+                                    value={formData.price}
                                     id="price"
                                     onChange={changeHandler}
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -107,9 +115,20 @@ const ProductAddForm = () => {
                                     required="" />
                             </div>
                             <div>
-                                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category *</label>
-                                <CategorySelect
-                                    onChange={changeHandler} />
+                                <select
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    onChange={changeHandler}
+                                    name="category"
+                                >
+                                    <option selected="" className="ml-2">
+                                        Select category
+                                    </option>
+                                    {options?.map((v, i) => (
+                                        <option key={i} value={v._id}>
+                                            {v.title}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                                 <Link href="/admin/addcatagory">Add New Category</Link>
@@ -120,6 +139,7 @@ const ProductAddForm = () => {
                                     type="number"
                                     name={"stock"}
                                     id="stock"
+                                    value={formData.stock}
                                     onChange={changeHandler}
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="12"
@@ -130,6 +150,8 @@ const ProductAddForm = () => {
                                 <textarea
                                     id="desc"
                                     name={"desc"}
+                                    value={formData.desc}
+                                    onChange={changeHandler}
                                     rows="8"
                                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="Your description here"></textarea>

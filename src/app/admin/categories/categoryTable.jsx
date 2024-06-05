@@ -5,7 +5,9 @@ import DeleteButton from "../../../components/CatDel";
 
 const CategoryTable = async () => {
     async function getData() {
-        const res = await fetch("http://localhost:3000/api/categories")
+        const res = await fetch("http://localhost:3000/api/categories", {
+            cache: "no-store"
+        })
 
         return res.json()
     }
